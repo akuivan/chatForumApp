@@ -1,0 +1,13 @@
+<form action="/createNewThread" method="POST">
+Aihe: <input type="text" name="title" size ="40">
+<br>
+<br>
+<input type="checkbox" name="private" value="1"/> Yksityinen
+<br>
+<br>
+Ketkä käyttäjät saavat nähdä keskustelun,
+mikäli valitsit vaihtoehdon "Yksityinen": <br>
+<textarea name="allowed_users" rows="4" cols="40">
+</textarea><br>
+<input type="submit" value="Luo uusi keskustelu">
+</form>

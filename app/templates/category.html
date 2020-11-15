@@ -1,0 +1,9 @@
+<a href="/newThread">Luo uusi viestiketju</a><br>
+<a href="/forumIndex">Palaa takaisin kategorioihin</a><br>
+<hr><br>
+{% for thread in threads %}
+{{ thread[1] }}<br>
+Luotu: {{ thread[2].strftime("%Y-%m-%d %H:%M:%S") }}<br>
+<a href="/thread/{{ thread[0] }}">Avaa viestiketju</a>
+<hr>
+{% endfor %}
