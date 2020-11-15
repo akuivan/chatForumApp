@@ -36,7 +36,7 @@ Features yet to be created:
 2. login and click on a category where you want to add a new thread
 3. click "Luo uusi viestiketju"
 4. write a title for your thread
-  1. if you want to create a **public thread**, go straight to step 5
-  2. if you want to create a **private thread** , check the box next to the words "Yksityinen". Then write usernames into the textbox (remember to be exact!) and separate them by comma *if you wrote multiple usernames*. For example, if you want multiple users: "maija, Miia, Pekka". Or if you want just give one user the permission to see your thread, then write that username only. For example, "maija" (even "maija," would work though). Then go to step 5
+  - if you want to create a **public thread**, go straight to step 5
+  - if you want to create a **private thread** , check the box next to the words "Yksityinen". Then write usernames into the textbox (remember to be exact!) and separate them by comma *if you wrote multiple usernames*. For example, if you want multiple users: "maija, Miia, Pekka". Or if you want just give one user the permission to see your thread, then write that username only. For example, "maija" (even "maija," would work though). Then go to step 5
 5. click "Luo uusi keskustelu"
 6. now you can check if you can open your thread on your current user and then logout and check if you can open the thread on your other user(s)
