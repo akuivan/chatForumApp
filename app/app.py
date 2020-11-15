@@ -91,22 +91,13 @@ def checkPermissionToViewThread(user_id, thread_id ):
     result = db.session.execute(sql, {"thread_id":thread_id})    
     userWhoCreatedThread = result.fetchone()[0]
 
-    print(user_id)
-    print(userWhoCreatedThread)
-    print(thread_id)
-
     if is_admin():
         return True
     elif is_user() and user_id == userWhoCreatedThread:
         return True
     elif is_user():
-        print(user_id)
-        print(userWhoCreatedThread)
         sql = "SELECT 1 FROM allowedusers WHERE user1_id=:user1_id AND user2_id=:user2_id"
         result = db.session.execute(sql, {"user1_id":userWhoCreatedThread, "user2_id":user_id})
-        print(user_id)
-        print(userWhoCreatedThread)
-        print(result.fetchone())
 
         if result.fetchone() == None:    
             return False
