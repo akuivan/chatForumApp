@@ -14,7 +14,7 @@ Admins can
 
 
 #### 15.11 
-Due to some problems with files being public while they shouldn't have been and git history, this new repository had to be created. Therefore some of the commits that showed gradual progress is now missing from this repository.
+Due to some problems with files being public while they shouldn't have been and git history, this new repository had to be created. Therefore some of the commits that showed gradual progress are now missing from this repository.
 
 Currently this app has features where:
 - users can
