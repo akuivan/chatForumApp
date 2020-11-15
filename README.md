@@ -31,7 +31,7 @@ Features yet to be created:
 - admins can 
   - modify threads and messages and delete them.
   
-##### How to test this app on Heroku
+##### How to test [this app](https://tshoha-chatforumapp.herokuapp.com) on Heroku  
 1. create two (or more if you'd like) accounts with unique usernames.
 2. login and click on a category where you want to add a new thread
 3. click "Luo uusi viestiketju"
