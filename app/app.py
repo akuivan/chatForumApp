@@ -18,28 +18,17 @@ def index():
 def forumIndex():
     return render_template("forumIndex.html")
 
-@app.route("/login",methods=["POST"])
+@app.route("/login",methods=["GET","POST"])
 def login():
-    username = request.form["username"]
-    password = request.form["password"]
-
-    sql = "SELECT password FROM users WHERE username=:username"
-    result = db.session.execute(sql, {"username":username})
-    user = result.fetchone()    
-  
-    if user == None:
-    # invalid username
-        return redirect("/") 
-    else:
-        hash_value = user[0]
-    if check_password_hash(hash_value,password):
-        # correct username and password, give access to forum
-        session["username"] = username
-
-        return redirect("/forumIndex")
-    else:
-        # invalid password
-        return redirect("/") 
+    if request.method == "GET":
+        return render_template("index.html")
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        if login(username,password):
+            return redirect("/forumIndex")
+        else:
+            return render_template("error.html",message="Väärä tunnus tai salasana")
 
 @app.route("/logout")
 def logout():
@@ -63,6 +52,20 @@ def createAccount():
             return render_template("error.html",message="Rekisteröinti ei onnistunut, sillä kyseinen käyttäjätunnus on varattu")
 
 #
+def login(username, password):
+    sql = "SELECT password, id FROM users WHERE username=:username"
+    result = db.session.execute(sql, {"username":username})
+    user = result.fetchone()
+    if user == None:
+        return False
+    else:
+        if check_password_hash(user[0],password):
+            session["username"] = username
+            #session["user_id"] = user[1]
+            return True
+        else:
+            return False
+
 def register(username,password):
     hash_value = generate_password_hash(password)
     try:
@@ -73,7 +76,6 @@ def register(username,password):
     except:
         return False
     
-
 def is_user():
     id = user_id()
     sql = "SELECT 1 FROM users WHERE id=:id"
@@ -116,7 +118,6 @@ def checkPermissionToViewThread(user_id, thread_id ):
             return False
     else:
         return False
-
 
 def fetchCategory(category_id):
     sql = "SELECT threads. id, threads.title, threads.created_at FROM threads, categories WHERE threads.category_id = categories.id AND categories.id = :category_id"   
