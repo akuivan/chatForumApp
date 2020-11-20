@@ -50,17 +50,30 @@ def logout():
 def createAccountIndex():
     return render_template("createAccount.html")
 
-@app.route("/registration", methods=["POST"])
+@app.route("/registration", methods=["GET","POST"])
 def createAccount():
-    username = request.form["username"]
-    password = request.form["password"]
-    hash_value = generate_password_hash(password)
-    sql = "INSERT INTO users (username,password,admin) VALUES (:username,:password,:admin)"
-    db.session.execute(sql, {"username":username,"password":hash_value, "admin":False})
-    db.session.commit()
-    return redirect("/") 
+    if request.method == "GET":
+        return render_template("createAccount.html")
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        if register(username,password):
+            return redirect("/")
+        else:
+            return render_template("error.html",message="Rekisteröinti ei onnistunut, sillä kyseinen käyttäjätunnus on varattu")
 
-# 
+#
+def register(username,password):
+    hash_value = generate_password_hash(password)
+    try:
+        sql = "INSERT INTO users (username,password,admin) VALUES (:username,:password,:admin)"
+        db.session.execute(sql, {"username":username,"password":hash_value, "admin":False})
+        db.session.commit()
+        return True
+    except:
+        return False
+    
+
 def is_user():
     id = user_id()
     sql = "SELECT 1 FROM users WHERE id=:id"
