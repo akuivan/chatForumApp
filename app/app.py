@@ -113,9 +113,12 @@ def checkPermissionToViewThread(user_id, thread_id ):
     elif is_user():
         sql = "SELECT 1 FROM allowedusers WHERE user1_id=:user1_id AND user2_id=:user2_id"
         result = db.session.execute(sql, {"user1_id":userWhoCreatedThread, "user2_id":user_id})
-
+        print(userWhoCreatedThread)
+        print(user_id)
         if result.fetchone() == None:    
             return False
+        else:
+            return True
     else:
         return False
 
