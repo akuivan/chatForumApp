@@ -137,9 +137,12 @@ def checkPermissionToViewThread(user_id, thread_id ):
         return False
 
 def fetchCategory(category_id):
-    sql = "SELECT threads. id, threads.title, threads.created_at FROM threads, categories WHERE threads.category_id = categories.id AND categories.id = :category_id"   
+    sql = "SELECT threads.id, threads.title, threads.created_at FROM threads, categories WHERE threads.category_id = categories.id AND categories.id = :category_id"   
     result = db.session.execute(sql, {"category_id":category_id})
     return result.fetchall()
+
+def thread_id ():
+    return session["thread"]
 #
 
 @app.route("/ruokaCategory")
@@ -207,9 +210,22 @@ def createNewThread():
 def newThread():
    return render_template("newThread.html")
 
-@app.route("/newMessage")
-def newMessage():
-    return render_template("newMessage.html")
+@app.route("/send", methods=["POST"])
+def send():
+    content = request.form["content"]
+    if send(content):
+        return redirect("/forumIndex")
+    else:
+        return render_template("error.html",message="Viestin lähetys ei onnistunut")
+
+def send(content):
+    id = user_id()
+    if user_id == 0:
+        return False
+    sql = "INSERT INTO messages (user_id, thread_id, content, sent_at) VALUES (:user_id, :thread_id, :content, NOW())"
+    db.session.execute(sql, {"user_id":id, "thread_id":thread_id(),"content":content})
+    db.session.commit()
+    return True        
 
 @app.route("/thread/<int:id>")
 def thread(id):
@@ -217,6 +233,7 @@ def thread(id):
     sql = "SELECT private FROM threads WHERE id =:thread_id"
     result = db.session.execute(sql, {"thread_id":id})    
     private = result.fetchone()[0]
+    session["thread"] = id
 
     if private:
         if checkPermissionToViewThread(user_id(), id):
