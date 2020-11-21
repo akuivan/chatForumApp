@@ -5,5 +5,7 @@
 <a href="/ohjelmointiCategory">Ohjelmointi</a><br>
 <a href="/ruokaCategory">Ruoka</a><br>
 <a href="/muuCategory">Muu</a><br>
-
-
+<br><br>
+{% if 'admin' in session %}
+    <a href="/admin">Hallinnoi foorumia</a>
+{% endif %}

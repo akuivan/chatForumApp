@@ -32,8 +32,15 @@ def login():
 
 @app.route("/logout")
 def logout():
-    del session["username"]
-    return redirect("/")
+    #admin user's logout
+    if not session.get("admin") is None:
+        del session["username"]
+        del session["admin"]
+        return redirect("/")
+    # normal user's logout
+    else:
+        del session["username"]
+        return redirect("/")
 
 @app.route("/createAccount")
 def createAccountIndex():
@@ -61,8 +68,15 @@ def login(username, password):
     else:
         if check_password_hash(user[0],password):
             session["username"] = username
-            #session["user_id"] = user[1]
-            return True
+            # Check if user is admin
+            if is_admin():
+                session["admin"] = True
+                #session["user_id"] = user[1]
+                return True
+            # Normal user
+            else:
+                return True
+        #password doesn't match
         else:
             return False
 
