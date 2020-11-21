@@ -1,4 +1,14 @@
 <p>olet viestiketjussa</p><br>
+Viestien määrä: {{ count }}
+<hr>
+{% for message in messages %}
+<i>Viesti:</i> {{ message[0] }}
+<p>
+<i>Lähettäjä:</i> {{ message[1] }}
+<p>
+<i>Aika:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }}
+<hr>
+{% endfor %}<br>
 <form action="/send" method="POST">
 Viesti: <br>
 <textarea name="content" rows="5" cols="40">

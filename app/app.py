@@ -144,7 +144,6 @@ def fetchCategory(category_id):
 def thread_id ():
     return session["thread"]
 #
-
 @app.route("/ruokaCategory")
 def ruokaCategory():
     session["category"] = 1
@@ -237,8 +236,18 @@ def thread(id):
 
     if private:
         if checkPermissionToViewThread(user_id(), id):
-            return render_template("thread.html")
+            return show_thread()
         else:
             return redirect("/forumIndex") 
     else: #thread is public
-        return render_template("thread.html")  
+        return show_thread()
+
+def show_thread():
+    list = get_list()
+    return render_template("thread.html", count=len(list), messages=list)
+
+def get_list():
+    sql = "SELECT M.content, U.username, M.sent_at FROM messages M, users U, threads T " \
+          "WHERE M.user_id=U.id AND M.thread_id=T.id AND T.id=:input_id ORDER BY M.id"
+    result = db.session.execute(sql,{"input_id":thread_id()})
+    return result.fetchall()    
