@@ -1,4 +1,3 @@
-<p>olet viestiketjussa</p><br>
 Viestien määrä: {{ count }}
 <hr>
 {% for message in messages %}
@@ -7,6 +6,10 @@ Viestien määrä: {{ count }}
 <i>Lähettäjä:</i> {{ message[1] }}
 <p>
 <i>Aika:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }}
+{% if user_id == message[3] %}
+<br><a href="/modifyMessage">Muokkaa viestiä</a>    
+<br><a href="/deleteMessage">Poista viesti</a>
+{% endif %}
 <hr>
 {% endfor %}<br>
 <form action="/send" method="POST">

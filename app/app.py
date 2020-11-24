@@ -35,6 +35,7 @@ def logout():
     #admin user's logout
     if not session.get("admin") is None:
         del session["username"]
+        del session["user_id"]
         del session["admin"]
         return redirect("/")
     # normal user's logout
@@ -47,7 +48,7 @@ def createAccountIndex():
     return render_template("createAccount.html")
 
 @app.route("/registration", methods=["GET","POST"])
-def createAccount():
+def createAccount():    
     if request.method == "GET":
         return render_template("createAccount.html")
     if request.method == "POST":
@@ -56,7 +57,7 @@ def createAccount():
         if register(username,password):
             return redirect("/")
         else:
-            return render_template("error.html",message="Rekisteröinti ei onnistunut, sillä kyseinen käyttäjätunnus on varattu")
+            return render_template("error.html",message="Rekisteröinti ei onnistunut, sillä kyseinen käyttäjätunnus on varattu", password=password)
 
 #
 def login(username, password):
@@ -68,10 +69,10 @@ def login(username, password):
     else:
         if check_password_hash(user[0],password):
             session["username"] = username
+            session["user_id"] = user[1]
             # Check if user is admin
             if is_admin():
                 session["admin"] = True
-                #session["user_id"] = user[1]
                 return True
             # Normal user
             else:
@@ -244,10 +245,15 @@ def thread(id):
 
 def show_thread():
     list = get_list()
-    return render_template("thread.html", count=len(list), messages=list)
+    return render_template("thread.html", count=len(list), messages=list, user_id=session["user_id"])
 
 def get_list():
-    sql = "SELECT M.content, U.username, M.sent_at FROM messages M, users U, threads T " \
+    sql = "SELECT M.content, U.username, M.sent_at, U.id FROM messages M, users U, threads T " \
           "WHERE M.user_id=U.id AND M.thread_id=T.id AND T.id=:input_id ORDER BY M.id"
     result = db.session.execute(sql,{"input_id":thread_id()})
     return result.fetchall()    
+
+
+@app.route("/modifyMessage")
+def modify_message():
+    return render_template("modifyMessage.html")
