@@ -260,3 +260,18 @@ def delete_message(id):
     result = db.session.execute(sql,{"id":id})
     db.session.commit()
     return redirect("/forumIndex")
+
+@app.route("/modifyMessage/<int:id>")
+def modify_message_scene(id):
+    sql = "SELECT content FROM messages M WHERE id=:id" 
+    result = db.session.execute(sql,{"id":id})
+    content = result.fetchone()[0]
+
+    return render_template("modifyMessage.html", content=content, id=id)
+
+@app.route("/update/<int:id>", methods=["POST"])    
+def update_message(id):
+    sql = "UPDATE messages SET content=:content WHERE id=:id"
+    db.session.execute(sql, {"content":request.form["content"], "id":id})
+    db.session.commit()
+    return redirect("/forumIndex")
