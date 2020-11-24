@@ -8,7 +8,7 @@ Viestien määrä: {{ count }}
 <i>Aika:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }}
 {% if user_id == message[3] %}
 <br><a href="/modifyMessage">Muokkaa viestiä</a>    
-<br><a href="/deleteMessage">Poista viesti</a>
+<br><a href="/deleteMessage/{{ message[4] }}">Poista viesti</a>
 {% endif %}
 <hr>
 {% endfor %}<br>

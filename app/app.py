@@ -44,11 +44,11 @@ def logout():
         return redirect("/")
 
 @app.route("/createAccount")
-def createAccountIndex():
+def create_account_index():
     return render_template("createAccount.html")
 
 @app.route("/registration", methods=["GET","POST"])
-def createAccount():    
+def create_account():    
     if request.method == "GET":
         return render_template("createAccount.html")
     if request.method == "POST":
@@ -115,7 +115,7 @@ def user_id():
     user_id = result.fetchone()[0]
     return user_id
 
-def checkPermissionToViewThread(user_id, thread_id ):
+def check_permission_to_view_thread(user_id, thread_id ):
     # get user who created the thread
     sql = "SELECT user_id FROM threads WHERE id =:thread_id"
     result = db.session.execute(sql, {"thread_id":thread_id})    
@@ -137,7 +137,7 @@ def checkPermissionToViewThread(user_id, thread_id ):
     else:
         return False
 
-def fetchCategory(category_id):
+def fetch_category(category_id):
     sql = "SELECT threads.id, threads.title, threads.created_at FROM threads, categories WHERE threads.category_id = categories.id AND categories.id = :category_id"   
     result = db.session.execute(sql, {"category_id":category_id})
     return result.fetchall()
@@ -146,25 +146,25 @@ def thread_id ():
     return session["thread"]
 #
 @app.route("/ruokaCategory")
-def ruokaCategory():
+def ruoka_category():
     session["category"] = 1
     category_id= session["category"] 
-    return render_template("category.html",threads=fetchCategory(category_id))
+    return render_template("category.html",threads=fetch_category(category_id))
 
 @app.route("/ohjelmointiCategory")
-def ohjelmointiCategory():
+def ohjelmointi_category():
     session["category"] = 2
     category_id= session["category"] 
-    return render_template("category.html",threads=fetchCategory(category_id))
+    return render_template("category.html",threads=fetch_category(category_id))
 
 @app.route("/muuCategory")
-def muuCategory():
+def muu_category():
     session["category"] = 3
     category_id= session["category"]
-    return render_template("category.html",threads=fetchCategory(category_id))
+    return render_template("category.html",threads=fetch_category(category_id))
 
 @app.route("/createNewThread", methods=["POST"]) 
-def createNewThread():
+def create_new_thread():
     title = request.form["title"]
     private = request.form.getlist('private')
     selected = bool(private)
@@ -207,7 +207,7 @@ def createNewThread():
         return redirect("/forumIndex")
 
 @app.route("/newThread") 
-def newThread():
+def new_thread():
    return render_template("newThread.html")
 
 @app.route("/send", methods=["POST"])
@@ -236,7 +236,7 @@ def thread(id):
     session["thread"] = id
 
     if private:
-        if checkPermissionToViewThread(user_id(), id):
+        if check_permission_to_view_thread(user_id(), id):
             return show_thread()
         else:
             return redirect("/forumIndex") 
@@ -248,12 +248,15 @@ def show_thread():
     return render_template("thread.html", count=len(list), messages=list, user_id=session["user_id"])
 
 def get_list():
-    sql = "SELECT M.content, U.username, M.sent_at, U.id FROM messages M, users U, threads T " \
+    sql = "SELECT M.content, U.username, M.sent_at, U.id, M.id FROM messages M, users U, threads T " \
           "WHERE M.user_id=U.id AND M.thread_id=T.id AND T.id=:input_id ORDER BY M.id"
     result = db.session.execute(sql,{"input_id":thread_id()})
     return result.fetchall()    
+    
 
-
-@app.route("/modifyMessage")
-def modify_message():
-    return render_template("modifyMessage.html")
+@app.route("/deleteMessage/<int:id>")
+def delete_message(id):
+    sql = "DELETE FROM messages WHERE id=:id"
+    result = db.session.execute(sql,{"id":id})
+    db.session.commit()
+    return redirect("/forumIndex")
