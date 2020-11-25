@@ -275,3 +275,10 @@ def update_message(id):
     db.session.execute(sql, {"content":request.form["content"], "id":id})
     db.session.commit()
     return redirect("/forumIndex")
+
+@app.route("/deleteThread/<int:id>")
+def delete_thread(id):
+    sql = "DELETE FROM threads WHERE id=:id"
+    result = db.session.execute(sql,{"id":id})
+    db.session.commit()
+    return redirect("/forumIndex")
