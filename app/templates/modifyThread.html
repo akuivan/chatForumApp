@@ -1,0 +1,32 @@
+<a href="/forumIndex">Palaa takaisin kategorioihin</a><br>
+<h4>Muokattavan viestiketjun tiedot:</h4><br>
+{% for info in thread %}
+<i>Aloittaja:</i> {{ info[0] }}
+<p>
+<i>Otsikko:</i> {{ info[1] }}
+<p>
+<i>Kategoria:</i> {{ info[2] }}
+<p>
+<i>Yksityinen:</i> {{ info[3] }}
+<p>
+<i>Luotu:</i> {{ info[4].strftime("%Y-%m-%d %H:%M:%S") }}
+<p>
+{% endfor %}<br>
+<i>Aloittajan erikseen sallimat käyttäjät, mikäli heitä on: </i><br>
+{% for user in allowed %}
+{{ user[0] }}<br>
+{% endfor %}
+<br>
+<h4>Muokkaa viestikejua:</h4><br>
+<form action="/updateThread/{{id}}" method="POST">
+Aihe: <input type="text" name="title" size ="40">
+<br>
+<br>
+<input type="checkbox" name="private" value="1"/> Yksityinen
+<br>
+<br>
+Käyttäjät,jotka saavat nähdä viestiketjun  aloittajan lisäksi: <br>
+<textarea name="allowed_users" rows="4" cols="40">
+</textarea><br>
+<input type="submit" value="Muokkaa">
+</form>

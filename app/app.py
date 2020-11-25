@@ -181,30 +181,31 @@ def create_new_thread():
     db.session.commit()
     
     if selected: #thread is private       
-        allowed_users = request.form["allowed_users"]          
-        usernames = [username.strip() for username in allowed_users.split(',')if username != '']  
-        user1_id = user_id
-        #fetch thread id
-        sql = "SELECT id FROM threads WHERE title=:title"
-        result = db.session.execute(sql, {"title":title})
-        thread_id = result.fetchone()[0]
-
-        #Check usernames from database
-        for username in usernames:
-            sql = "SELECT id FROM users WHERE username=:username"
-            result = db.session.execute(sql, {"username":username})
-            user2_id = result.fetchone()[0]
-            #if user2_id exists in database
-            if user2_id:
-                #create table
-                sql= "INSERT INTO allowedusers (thread_id, user1_id, user2_id) VALUES (:thread_id, :user1_id, :user2_id)"
-                db.session.execute(sql, {"thread_id":thread_id,"user1_id":user1_id, "user2_id":user2_id})
-                db.session.commit()
-
+        handle_allowed_users(request.form["allowed_users"], user_id, title)
         return redirect("/forumIndex")
-   
     else:  #thread is public
         return redirect("/forumIndex")
+        
+
+def handle_allowed_users(allowed_users, user_id, title):
+    usernames = [username.strip() for username in allowed_users.split(',')if username != '']  
+    user1_id = user_id
+    #fetch thread id
+    sql = "SELECT id FROM threads WHERE title=:title"
+    result = db.session.execute(sql, {"title":title})
+    thread_id = result.fetchone()[0]
+
+    #Check usernames from database
+    for username in usernames:
+        sql = "SELECT id FROM users WHERE username=:username"
+        result = db.session.execute(sql, {"username":username})
+        user2_id = result.fetchone()[0]
+        #if user2_id exists in database
+        if user2_id:
+            #create table
+            sql= "INSERT INTO allowedusers (thread_id, user1_id, user2_id) VALUES (:thread_id, :user1_id, :user2_id)"
+            db.session.execute(sql, {"thread_id":thread_id,"user1_id":user1_id, "user2_id":user2_id})
+            db.session.commit()
 
 @app.route("/newThread") 
 def new_thread():
@@ -262,8 +263,8 @@ def delete_message(id):
     return redirect("/forumIndex")
 
 @app.route("/modifyMessage/<int:id>")
-def modify_message_scene(id):
-    sql = "SELECT content FROM messages M WHERE id=:id" 
+def modify_message(id):
+    sql = "SELECT content FROM messages WHERE id=:id" 
     result = db.session.execute(sql,{"id":id})
     content = result.fetchone()[0]
 
@@ -282,3 +283,56 @@ def delete_thread(id):
     result = db.session.execute(sql,{"id":id})
     db.session.commit()
     return redirect("/forumIndex")
+
+
+@app.route("/modifyThread/<int:id>")
+def modify_thread(id):
+    sql = "SELECT U.username, T.title, C.title, T.private, T.created_at FROM threads T," \
+    "users U, categories C WHERE T.user_id=U.id AND T.category_id = C.id AND T.id=:id" 
+    result = db.session.execute(sql,{"id":id})
+    thread = result.fetchall()
+    list =thread
+
+    return render_template("modifyThread.html", thread=list, id=id, allowed =get_list_of_allowed_users(id))
+
+def get_list_of_allowed_users(id):
+    sql = "SELECT username FROM users U, allowedusers A WHERE (U.id=A.user1_id OR U.id=A.user2_id) " \
+    "AND A.thread_id =:id"
+    result = db.session.execute(sql,{"id":id})
+    allowed_users = result.fetchall()
+    list = allowed_users
+    
+    return list
+
+@app.route("/updateThread/<int:id>", methods=["POST"])
+def update_thread(id):
+    private = request.form.getlist('private')
+    selected = bool(private)
+
+    sql = "UPDATE threads SET title=:title,private=:private WHERE id=:id"
+    db.session.execute(sql, {"title":request.form["title"], "private":selected, "id":id})
+    db.session.commit()
+
+    if selected: #thread is private       
+        update_allowed_users(request.form["allowed_users"])
+        return redirect("/forumIndex")
+    else:  #thread is public
+        sql = "DELETE FROM allowedusers WHERE thread_id =:id"
+        result = db.session.execute(sql,{"id":id})
+        db.session.commit()
+        return redirect("/forumIndex")
+
+def update_allowed_users(allowed_users):
+    usernames = [username.strip() for username in allowed_users.split(',')if username != '']  
+
+    #Check usernames from database
+    for username in usernames:
+        sql = "SELECT id FROM users WHERE username=:username"
+        result = db.session.execute(sql, {"username":username})
+        user2_id = result.fetchone()[0]
+        #if user2_id exists in database
+        if user2_id:
+            #create table
+            sql= "UPDATE allowedusers SET user2_id=:user2_id"
+            db.session.execute(sql, {"user2_id":user2_id})
+            db.session.commit()
