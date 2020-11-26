@@ -336,3 +336,13 @@ def update_allowed_users(allowed_users):
             sql= "UPDATE allowedusers SET user2_id=:user2_id"
             db.session.execute(sql, {"user2_id":user2_id})
             db.session.commit()
+
+
+@app.route("/search", methods=["GET"])
+def search_message():
+    query = request.args["query"]
+    sql = "SELECT thread_id, content, T.private FROM messages M, threads T WHERE M.thread_id=T.id" \
+    " AND content LIKE :query"
+    result = db.session.execute(sql, {"query":"%"+query+"%"})
+    messages = result.fetchall()
+    return render_template("result.html",messages=messages)
