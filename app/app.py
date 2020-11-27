@@ -32,16 +32,12 @@ def login():
 
 @app.route("/logout")
 def logout():
+    del session["username"]
+    del session["user_id"]
     #admin user's logout
     if not session.get("admin") is None:
-        del session["username"]
-        del session["user_id"]
         del session["admin"]
-        return redirect("/")
-    # normal user's logout
-    else:
-        del session["username"]
-        return redirect("/")
+    return redirect("/")
 
 @app.route("/createAccount")
 def create_account_index():
@@ -50,15 +46,18 @@ def create_account_index():
 @app.route("/registration", methods=["GET","POST"])
 def create_account():    
     if request.method == "GET":
-        return render_template("createAccount.html")
+        password = session["password"]
+        del session["password"]
+        return render_template("createAccount.html", password=password)
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
         if register(username,password):
             return redirect("/")
         else:
-            return render_template("error.html",message="Rekisteröinti ei onnistunut, sillä kyseinen käyttäjätunnus on varattu", password=password)
-
+            session["password"]=password
+            return render_template("error.html",message="Rekisteröinti ei onnistunut, " \
+            "sillä kyseinen käyttäjätunnus on varattu tai syötit tyhjän lomakkeen")
 #
 def login(username, password):
     sql = "SELECT password, id FROM users WHERE username=:username"
@@ -82,14 +81,17 @@ def login(username, password):
             return False
 
 def register(username,password):
-    hash_value = generate_password_hash(password)
-    try:
-        sql = "INSERT INTO users (username,password,admin) VALUES (:username,:password,:admin)"
-        db.session.execute(sql, {"username":username,"password":hash_value, "admin":False})
-        db.session.commit()
-        return True
-    except:
+    if username == "" or password =="":
         return False
+    else:
+        hash_value = generate_password_hash(password)
+        try:
+            sql = "INSERT INTO users (username,password,admin) VALUES (:username,:password,:admin)"
+            db.session.execute(sql, {"username":username,"password":hash_value, "admin":False})
+            db.session.commit()
+            return True
+        except:
+            return False
     
 def is_user():
     id = user_id()
@@ -138,7 +140,8 @@ def check_permission_to_view_thread(user_id, thread_id ):
         return False
 
 def fetch_category(category_id):
-    sql = "SELECT threads.id, threads.title, threads.created_at FROM threads, categories WHERE threads.category_id = categories.id AND categories.id = :category_id"   
+    sql = "SELECT threads.id, threads.title, threads.created_at FROM threads, " \
+    "categories WHERE threads.category_id = categories.id AND categories.id = :category_id"   
     result = db.session.execute(sql, {"category_id":category_id})
     return result.fetchall()
 
@@ -176,7 +179,8 @@ def create_new_thread():
     user_id = result.fetchone()[0]
     
     #create thread
-    sql= "INSERT INTO threads (user_id, category_id, title, private, created_at) VALUES  (:user_id , :category_id, :title, :private, NOW()) RETURNING id"
+    sql= "INSERT INTO threads (user_id, category_id, title, private, created_at)" \
+    " VALUES  (:user_id , :category_id, :title, :private, NOW()) RETURNING id"
     db.session.execute(sql, {"user_id":user_id, "category_id":category_id, "title":title, "private":selected})
     db.session.commit()
     
@@ -223,7 +227,8 @@ def send(content):
     id = user_id()
     if user_id == 0:
         return False
-    sql = "INSERT INTO messages (user_id, thread_id, content, sent_at) VALUES (:user_id, :thread_id, :content, NOW())"
+    sql = "INSERT INTO messages (user_id, thread_id, content, sent_at) " \
+    "VALUES (:user_id, :thread_id, :content, NOW())"
     db.session.execute(sql, {"user_id":id, "thread_id":thread_id(),"content":content})
     db.session.commit()
     return True        
