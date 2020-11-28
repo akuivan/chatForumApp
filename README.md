@@ -31,12 +31,18 @@ Features yet to be created:
 - admins can 
   - modify threads and messages and delete them.
   
+  
+#### 28.11 
+All the features are now created and should be working. Now what needs to be done is:
+- code refactoring
+- modify appearance
+- maybe some small tweaks to make the UI better
+  
 ##### How to test [this app](https://tshoha-chatforumapp.herokuapp.com) on Heroku  
-1. create two (or more if you'd like) accounts with unique usernames.
-2. login and click on a category where you want to add a new thread
-3. click "Luo uusi viestiketju"
-4. write a title for your thread
-  - if you want to create a **public thread**, go straight to step 5
-  - if you want to create a **private thread** , check the box next to the words "Yksityinen". Then write usernames into the textbox (remember to be exact!) and separate them by comma *if you wrote multiple usernames*. For example, if you want multiple users: "maija, Miia, Pekka". Or if you want only one specific user to see your thread, then write that username only. For example, "maija" (even "maija," would work though). Then go to step 5
-5. click "Luo uusi keskustelu"
-6. now you can check if you can open your thread on your current user and then logout and check if you can open the thread on your other user(s)
+1. To test users, you can create your own account(s) or use Pekka (password: kissa123)
+2. To test admin, you can log in with username "admin" and password "admin1"
+
+
+
+
+
