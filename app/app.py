@@ -58,7 +58,7 @@ def create_account():
             session["password"]=password
             return render_template("error.html",message="Rekisteröinti ei onnistunut, " \
             "sillä kyseinen käyttäjätunnus on varattu tai syötit tyhjän lomakkeen")
-#
+
 def login(username, password):
     sql = "SELECT password, id FROM users WHERE username=:username"
     result = db.session.execute(sql, {"username":username})
@@ -147,7 +147,7 @@ def fetch_category(category_id):
 
 def thread_id ():
     return session["thread"]
-#
+
 @app.route("/ruokaCategory")
 def ruoka_category():
     session["category"] = 1
