@@ -46,9 +46,14 @@ def create_account_index():
 @app.route("/registration", methods=["GET","POST"])
 def create_account():    
     if request.method == "GET":
-        password = session["password"]
-        del session["password"]
-        return render_template("createAccount.html", password=password)
+        # user has written username and/or password wrong when registering 
+        # or submitted an empty form, and now returns from error.html back to create an account 
+        if not session.get("password") is None:
+            password = session["password"]
+            del session["password"]
+            return render_template("createAccount.html", password=password)
+        else:
+            return render_template("createAccount.html")
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
