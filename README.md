@@ -41,6 +41,7 @@ All the features are now created and should be working. Now what needs to be don
 ##### How to test [this app](https://tshoha-chatforumapp.herokuapp.com) on Heroku  
 1. To test users, you can create your own account(s) or use Pekka (password: kissa123)
 2. To test admin, you can log in with username "admin" and password "admin1"
+- remember to also logout when testing different users/admin
 
 
 
