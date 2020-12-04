@@ -24,5 +24,11 @@ def get_list():
     sql = "SELECT M.content, U.username, M.sent_at, U.id, M.id FROM messages M, users U, threads T " \
           "WHERE M.user_id=U.id AND M.thread_id=T.id AND T.id=:input_id ORDER BY M.id"
     result = db.session.execute(sql,{"input_id":threads.thread_id()})
-    return result.fetchall()    
+    return result.fetchall()
+
+
+def delete_all_messages_from_thread(id):
+    sql = "DELETE FROM messages WHERE thread_id=:id"
+    result = db.session.execute(sql,{"id":id})
+    db.session.commit()
     

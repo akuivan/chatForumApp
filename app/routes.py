@@ -79,7 +79,8 @@ def create_account():
 
 @app.route("/newThread") 
 def new_thread():
-   return render_template("newThread.html")
+    list_of_users = users.get_list_of_users()
+    return render_template("newThread.html", users = list_of_users)
 
 @app.route("/createNewThread", methods=["POST"]) 
 def create_new_thread():
@@ -88,10 +89,7 @@ def create_new_thread():
     selected = bool(private)
     category_id= session["category"] 
     username = session["username"]
-    #fetch user's id by username
-    sql = "SELECT id FROM users WHERE username=:username"
-    result = db.session.execute(sql, {"username":username})
-    user_id = result.fetchone()[0]
+    user_id = users.user_id()
     
     #create thread
     sql= "INSERT INTO threads (user_id, category_id, title, private, created_at)" \
@@ -100,7 +98,7 @@ def create_new_thread():
     db.session.commit()
     
     if selected: #thread is private       
-        users.handle_allowed_users(request.form["allowed_users"], user_id, title)
+        users.handle_allowed_users(request.form.getlist('user'), user_id, title)
         return redirect("/forumIndex")
     else:  #thread is public
         return redirect("/forumIndex")   
@@ -153,6 +151,8 @@ def send():
 
 @app.route("/deleteThread/<int:id>")
 def delete_thread(id):
+    users.delete_allowed_users_from_thread(id)
+    messages.delete_all_messages_from_thread(id)
     sql = "DELETE FROM threads WHERE id=:id"
     result = db.session.execute(sql,{"id":id})
     db.session.commit()
@@ -167,7 +167,8 @@ def modify_thread(id):
     thread = result.fetchall()
     list =thread
 
-    return render_template("modifyThread.html", thread=list, id=id, allowed =users.get_list_of_allowed_users(id))
+    return render_template("modifyThread.html", thread=list, id=id, allowed =users.get_list_of_allowed_users(id)
+    , users = users.get_list_of_users())
 
 
 @app.route("/updateThread/<int:id>", methods=["POST"])
@@ -180,7 +181,7 @@ def update_thread(id):
     db.session.commit()
 
     if selected: #thread is private       
-        users.update_allowed_users(request.form["allowed_users"])
+        users.update_allowed_users(request.form.getlist('user'))
         return redirect("/forumIndex")
     else:  #thread is public
         sql = "DELETE FROM allowedusers WHERE thread_id =:id"

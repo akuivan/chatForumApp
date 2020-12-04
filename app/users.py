@@ -71,9 +71,8 @@ def check_permission_to_view_thread(user_id, thread_id ):
     elif is_user() and user_id == userWhoCreatedThread:
         return True
     elif is_user():
-        sql = "SELECT 1 FROM allowedusers WHERE user1_id=:user1_id AND user2_id=:user2_id"
-        result = db.session.execute(sql, {"user1_id":userWhoCreatedThread, "user2_id":user_id})
-
+        sql = "SELECT 1 FROM allowedusers WHERE user1_id=:user1_id AND user2_id=:user2_id AND thread_id=:thread_id"
+        result = db.session.execute(sql, {"user1_id":userWhoCreatedThread, "user2_id":user_id, "thread_id":thread_id})
         if result.fetchone() == None:    
             return False
         else:
@@ -82,7 +81,6 @@ def check_permission_to_view_thread(user_id, thread_id ):
         return False
 
 def handle_allowed_users(allowed_users, user_id, title):
-    usernames = [username.strip() for username in allowed_users.split(',')if username != '']  
     user1_id = user_id
     #fetch thread id
     sql = "SELECT id FROM threads WHERE title=:title"
@@ -90,7 +88,7 @@ def handle_allowed_users(allowed_users, user_id, title):
     thread_id = result.fetchone()[0]
 
     #Check usernames from database
-    for username in usernames:
+    for username in allowed_users:
         sql = "SELECT id FROM users WHERE username=:username"
         result = db.session.execute(sql, {"username":username})
         user2_id = result.fetchone()[0]
@@ -110,12 +108,17 @@ def get_list_of_allowed_users(id):
     
     return list
 
+def get_list_of_users():
+    sql = "SELECT username FROM users" 
+    result = db.session.execute(sql)
+    users = result.fetchall()
+    list = users
+
+    return list
 
 def update_allowed_users(allowed_users):
-    usernames = [username.strip() for username in allowed_users.split(',')if username != '']  
-
     #Check usernames from database
-    for username in usernames:
+    for username in allowed_users:
         sql = "SELECT id FROM users WHERE username=:username"
         result = db.session.execute(sql, {"username":username})
         user2_id = result.fetchone()[0]
@@ -125,3 +128,10 @@ def update_allowed_users(allowed_users):
             sql= "UPDATE allowedusers SET user2_id=:user2_id"
             db.session.execute(sql, {"user2_id":user2_id})
             db.session.commit()
+
+
+def delete_allowed_users_from_thread(id):
+    sql = "DELETE FROM allowedusers WHERE thread_id=:id"
+    result = db.session.execute(sql,{"id":id})
+    db.session.commit()
+    

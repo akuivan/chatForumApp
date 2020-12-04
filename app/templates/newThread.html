@@ -8,9 +8,8 @@ Aihe: <input type="text" name="title" size ="40">
 <br>
 Ketkä käyttäjät saavat nähdä keskustelun,
 mikäli valitsit vaihtoehdon "Yksityinen": <br>
-<textarea name="allowed_users" rows="4" cols="40">
-Esim. Maija, Pekka
-</textarea><br>
+{% for user in users %}
+<input type="checkbox" name="user" value="{{ user[0] }}">{{ user[0] }} <br>
+{% endfor %}
 <input type="submit" value="Luo uusi keskustelu">
 </form>
-
