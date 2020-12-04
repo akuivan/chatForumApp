@@ -16,6 +16,24 @@ def index():
 def forumIndex():
     return render_template("forumIndex.html")
 
+@app.route("/ruokaCategory")
+def ruoka_category():
+    session["category"] = 1
+    category_id= session["category"] 
+    return render_template("category.html",threads=categories.fetch_category(category_id), admin = users.is_admin())
+
+@app.route("/ohjelmointiCategory")
+def ohjelmointi_category():
+    session["category"] = 2
+    category_id= session["category"] 
+    return render_template("category.html",threads=categories.fetch_category(category_id), admin = users.is_admin())
+
+@app.route("/muuCategory")
+def muu_category():
+    session["category"] = 3
+    category_id= session["category"]
+    return render_template("category.html",threads=categories.fetch_category(category_id), admin = users.is_admin())
+
 @app.route("/login",methods=["GET","POST"])
 def login():
     if request.method == "GET":
@@ -32,9 +50,6 @@ def login():
 def logout():
     del session["username"]
     del session["user_id"]
-    #admin user's logout
-    if not session.get("admin") is None:
-        del session["admin"]
     return redirect("/")
 
 @app.route("/createAccount")
@@ -90,14 +105,6 @@ def create_new_thread():
     else:  #thread is public
         return redirect("/forumIndex")   
 
-@app.route("/send", methods=["POST"])
-def send():
-    content = request.form["content"]
-    if messages.send(content):
-        return redirect("/forumIndex")
-    else:
-        return render_template("error.html",message="Viestin lähetys ei onnistunut")
-
 @app.route("/thread/<int:id>")
 def thread(id):
     #check if thread is private
@@ -135,6 +142,14 @@ def update_message(id):
     db.session.execute(sql, {"content":request.form["content"], "id":id})
     db.session.commit()
     return redirect("/forumIndex")
+
+@app.route("/send", methods=["POST"])
+def send():
+    content = request.form["content"]
+    if messages.send(content):
+        return redirect("/forumIndex")
+    else:
+        return render_template("error.html",message="Viestin lähetys ei onnistunut")
 
 @app.route("/deleteThread/<int:id>")
 def delete_thread(id):
@@ -182,22 +197,3 @@ def search_message():
     result = db.session.execute(sql, {"query":"%"+query+"%"})
     messages = result.fetchall()
     return render_template("result.html",messages=messages)
-
-
-@app.route("/ruokaCategory")
-def ruoka_category():
-    session["category"] = 1
-    category_id= session["category"] 
-    return render_template("category.html",threads=threads.fetch_category(category_id))
-
-@app.route("/ohjelmointiCategory")
-def ohjelmointi_category():
-    session["category"] = 2
-    category_id= session["category"] 
-    return render_template("category.html",threads=threads.fetch_category(category_id))
-
-@app.route("/muuCategory")
-def muu_category():
-    session["category"] = 3
-    category_id= session["category"]
-    return render_template("category.html",threads=threads.fetch_category(category_id))

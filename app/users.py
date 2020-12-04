@@ -18,13 +18,7 @@ def login(username, password):
         if check_password_hash(user[0],password):
             session["username"] = username
             session["user_id"] = user[1]
-            # Check if user is admin
-            if is_admin():
-                session["admin"] = True
-                return True
-            # Normal user
-            else:
-                return True
+            return True
         #password doesn't match
         else:
             return False

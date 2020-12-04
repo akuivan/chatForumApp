@@ -5,7 +5,7 @@
 {{ thread[1] }}<br>
 Luotu: {{ thread[2].strftime("%Y-%m-%d %H:%M:%S") }}<br>
 <a href="/thread/{{ thread[0] }}">Avaa viestiketju</a>
-{% if 'admin' in session %}
+{% if admin == true %}
     <br><br>
     <a href="/modifyThread/{{ thread[0] }}">Muokkaa viestiketjua</a><br>
     <a href="/deleteThread/{{ thread[0] }}">Poista viestiketju</a>
