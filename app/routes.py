@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from db import db
 from app import app
 
-import users, messages, threads, categories
+import users, messages, threads
 
 @app.route("/")
 def index():
@@ -20,19 +20,24 @@ def forumIndex():
 def ruoka_category():
     session["category"] = 1
     category_id= session["category"] 
-    return render_template("category.html",threads=categories.fetch_category(category_id), admin = users.is_admin())
+    thread_list = threads.fetch_category_threads(category_id)
+
+    return render_template("category.html",threads=threads.fetch_category_threads(category_id)
+    , admin = users.is_admin(), user = users.user_id(), allowed = users.get_list_of_allowed_users_id())
 
 @app.route("/ohjelmointiCategory")
 def ohjelmointi_category():
     session["category"] = 2
     category_id= session["category"] 
-    return render_template("category.html",threads=categories.fetch_category(category_id), admin = users.is_admin())
+    return render_template("category.html",threads=threads.fetch_category_threads(category_id),
+     admin = users.is_admin(), user = users.user_id(), allowed = users.get_list_of_allowed_users_id())
 
 @app.route("/muuCategory")
 def muu_category():
     session["category"] = 3
     category_id= session["category"]
-    return render_template("category.html",threads=categories.fetch_category(category_id), admin = users.is_admin())
+    return render_template("category.html",threads=threads.fetch_category_threads(category_id),
+     admin = users.is_admin(), user = users.user_id(), allowed = users.get_list_of_allowed_users_id())
 
 @app.route("/login",methods=["GET","POST"])
 def login():

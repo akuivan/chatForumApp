@@ -60,7 +60,7 @@ def user_id():
     user_id = result.fetchone()[0]
     return user_id
 
-def check_permission_to_view_thread(user_id, thread_id ):
+def check_permission_to_view_thread(user_id, thread_id):
     # get user who created the thread
     sql = "SELECT user_id FROM threads WHERE id =:thread_id"
     result = db.session.execute(sql, {"thread_id":thread_id})    
@@ -100,17 +100,26 @@ def handle_allowed_users(allowed_users, user_id, title):
             db.session.commit()
 
 def get_list_of_allowed_users(id):
-    sql = "SELECT username FROM users U, allowedusers A WHERE (U.id=A.user1_id OR U.id=A.user2_id) " \
+    sql = "SELECT username FROM users U, allowedusers A WHERE U.id=A.user2_id " \
     "AND A.thread_id =:id"
     result = db.session.execute(sql,{"id":id})
     allowed_users = result.fetchall()
     list = allowed_users
-    
+
     return list
 
-def get_list_of_users():
-    sql = "SELECT username FROM users" 
+def get_list_of_allowed_users_id():
+    sql = "SELECT * FROM allowedusers"
     result = db.session.execute(sql)
+    allowed_users = result.fetchall()
+    list = allowed_users
+    
+    return list
+   
+
+def get_list_of_users():
+    sql = "SELECT username FROM users WHERE id != :id" 
+    result = db.session.execute(sql, {"id":session["user_id"]})
     users = result.fetchall()
     list = users
 

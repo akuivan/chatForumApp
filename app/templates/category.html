@@ -2,13 +2,24 @@
 <a href="/forumIndex">Palaa takaisin kategorioihin</a><br>
 <hr><br>
 {% for thread in threads %}
-{{ thread[1] }}<br>
-Luotu: {{ thread[2].strftime("%Y-%m-%d %H:%M:%S") }}<br>
-<a href="/thread/{{ thread[0] }}">Avaa viestiketju</a>
-{% if admin == true %}
-    <br><br>
-    <a href="/modifyThread/{{ thread[0] }}">Muokkaa viestiketjua</a><br>
-    <a href="/deleteThread/{{ thread[0] }}">Poista viestiketju</a>
-{% endif %}
-<hr>
+	{% if ((thread[3] == true) and (user == thread[4] or admin == true)) or (thread[3] == false) %}
+		{{ thread[1] }}<br>
+		Luotu: {{ thread[2].strftime("%Y-%m-%d %H:%M:%S") }}<br>
+		<a href="/thread/{{ thread[0] }}">Avaa viestiketju</a>
+		{% if admin == true %}
+    			<br><br>
+    			<a href="/modifyThread/{{ thread[0] }}">Muokkaa viestiketjua</a><br>
+    			<a href="/deleteThread/{{ thread[0] }}">Poista viestiketju</a>
+		{% endif %}
+		<hr>
+	{% elif thread[3] == true %}
+		{% for allow in allowed %}
+			{% if thread[0] == allow[1] and user == allow[3] %}
+				{{ thread[1] }}<br>
+				Luotu: {{ thread[2].strftime("%Y-%m-%d %H:%M:%S") }}<br>
+				<a href="/thread/{{ thread[0] }}">Avaa viestiketju</a>
+				<hr>
+			{% endif %}	
+		{% endfor %}
+	{% endif %}
 {% endfor %}
