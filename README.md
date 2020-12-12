@@ -41,7 +41,7 @@ All the features are now created and should be working. Now what needs to be don
 
 #### 12.12 
 
-All the features previously mentioned above in description are have been created and some have been fixed. Appearance has also been modified and code has been  refactored and separated into different modules to a certain extent.
+All the features previously mentioned above in the beginning of description have been created and some have been fixed. Appearance has also been modified and code refactored and separated into different modules to a certain extent.
 
 ##### How to test [this app](https://tshoha-chatforumapp.herokuapp.com) on Heroku  
 1. To test users, you can create your own account(s) or use Pekka (password: kissa123)
