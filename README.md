@@ -38,12 +38,12 @@ All the features are now created and should be working. Now what needs to be don
 - modify appearance
 - maybe some small tweaks to make the UI better
   
+
+#### 12.12 
+
+All the features previously mentioned above in description are have been created and some have been fixed. Appearance has also been modified and code has been  refactored and separated into different modules to a certain extent.
+
 ##### How to test [this app](https://tshoha-chatforumapp.herokuapp.com) on Heroku  
 1. To test users, you can create your own account(s) or use Pekka (password: kissa123)
 2. To test admin, you can log in with username "admin" and password "admin1"
-- remember to also logout when testing different users/admin
-
-
-
-
 
