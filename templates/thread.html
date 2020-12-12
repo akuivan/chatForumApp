@@ -3,16 +3,16 @@
 Viestien määrä: {{ count }}
 <hr>
 {% for message in messages %}
-<i>Viesti:</i> {{ message[0] }}
-<p>
-<i>Lähettäjä:</i> {{ message[1] }}
-<p>
-<i>Aika:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }}
-{% if (user_id == message[3]) or (admin == true) %}
-<br><a href="/modifyMessage/{{ message[4] }}">Muokkaa viestiä</a>    
-<br><a href="/deleteMessage/{{ message[4] }}">Poista viesti</a>
-{% endif %}
-<hr>
+  <i>Viesti:</i> {{ message[0] }}
+  <p>
+  <i>Lähettäjä:</i> {{ message[1] }}
+  <p>
+  <i>Aika:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }}
+  {% if (user_id == message[3]) or (admin == true) %}
+    <br><a href="/modifyMessage/{{ message[4] }}">Muokkaa viestiä</a>    
+    <br><a href="/deleteMessage/{{ message[4] }}">Poista viesti</a>
+    {% endif %}
+  <hr>
 {% endfor %}<br>
 <form action="/send" method="POST">
 Viesti: <br>
