@@ -108,7 +108,7 @@ def get_list_of_allowed_users(id):
 
     return list
 
-def get_list_of_allowed_users_id():
+def get_list_of_allowed_users():
     sql = "SELECT * FROM allowedusers"
     result = db.session.execute(sql)
     allowed_users = result.fetchall()
