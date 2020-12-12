@@ -1,13 +1,28 @@
-<p>Olet kirjautunut nimellä {{ session.username }}</p>
-<a href="/logout">Kirjaudu ulos</a><br>
-<h3>Tervetuloa sisälle foorumiin</h3>
-<h4>Kategoriat</h4>
-<a href="/ohjelmointiCategory">Ohjelmointi</a><br>
-<a href="/ruokaCategory">Ruoka</a><br>
-<a href="/muuCategory">Muu</a><br>
-<br><br>
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="card h-10">
+	<div class="card-body d-flex flex-column justify-content-center align-items-center">
+		<h1 class="display-2 text-primary"><span class="ion ion-ios-checkmark-circle-outline"></span></h1>
+		<h4 class="card-title text-primary">Tervetuloa sisälle foorumiin</h4>
+		<p class="card-text">Olet kirjautunut nimellä {{ session.username }}</p>
+		<a href="/logout">Kirjaudu ulos</a><br>
+	</div>
+</div>
+<div class="card border-primary h-30">
+    <div class="card-body">
+        <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action active">Kategoriat</a>
+            <a href="/ohjelmointiCategory" class="list-group-item list-group-item-action">Ohjelmointi</a>
+            <a href="/ruokaCategory"" class="list-group-item list-group-item-action">Ruoka</a>
+            <a href="/muuCategory" class="list-group-item list-group-item-action">Muu</a>
+        </div>
+    </div>
+</div>
+<br>
 <form action="/search" method="GET">
 Hae viestiä hakusanalla: <input type="text" name="query">
 <br>
 <input type="submit" value="etsi">
 </form>
+{% endblock %}

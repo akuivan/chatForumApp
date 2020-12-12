@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from db import db
 from app import app
 
-import users, messages, threads
+import users, messages, threads, os
 
 @app.route("/")
 def index():
@@ -47,12 +47,14 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         if users.login(username,password):
+            session["csrf_token"] = os.urandom(16).hex()
             return redirect("/forumIndex")
         else:
             return render_template("error.html",message="Väärä tunnus tai salasana")
 
 @app.route("/logout")
 def logout():
+    del session["csrf_token"]
     del session["username"]
     del session["user_id"]
     return redirect("/")
@@ -89,6 +91,9 @@ def new_thread():
 
 @app.route("/createNewThread", methods=["POST"]) 
 def create_new_thread():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
+
     title = request.form["title"]
     private = request.form.getlist('private')
     selected = bool(private)
@@ -141,6 +146,9 @@ def modify_message(id):
 
 @app.route("/update/<int:id>", methods=["POST"])    
 def update_message(id):
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
+
     sql = "UPDATE messages SET content=:content WHERE id=:id"
     db.session.execute(sql, {"content":request.form["content"], "id":id})
     db.session.commit()
@@ -148,6 +156,9 @@ def update_message(id):
 
 @app.route("/send", methods=["POST"])
 def send():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
+
     content = request.form["content"]
     if messages.send(content):
         return redirect("/forumIndex")

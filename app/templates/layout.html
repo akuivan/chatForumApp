@@ -1,0 +1,22 @@
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Yantramanav:200,300,400,700">
+</head>
+                
+<body>
+{% block content %}
+<title>ChatForumApp</title>
+<h2>Tervetuloa ChatForumAppin etusivulle</h2><br>
+<form action="/login" method="POST">
+Käyttäjätunnus: <input type="text" name ="username"><br>
+Salasana: <input type="password" name="password"><br>
+<input type="submit" value="Kirjaudu"><br>
+</form>
+<a href="/createAccount">Luo tili</a>
+{% endblock %}
+</body>
+</html>

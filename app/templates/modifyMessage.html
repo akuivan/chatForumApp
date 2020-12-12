@@ -1,3 +1,5 @@
+{% extends "layout.html" %}        
+{% block content %}
 {{content}}
 <br>
 <br>
@@ -5,4 +7,6 @@
 Muokattu viesti: <br>
 <textarea name="content" rows="5" cols="40">
 </textarea><br>
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 <input type="submit" value="Lähetä">
+{% endblock %}
