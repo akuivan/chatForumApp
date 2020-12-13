@@ -99,7 +99,7 @@ def handle_allowed_users(allowed_users, user_id, title):
             db.session.execute(sql, {"thread_id":thread_id,"user1_id":user1_id, "user2_id":user2_id})
             db.session.commit()
 
-def get_list_of_allowed_users(id):
+def get_list_of_allowed_users_usernames(id):
     sql = "SELECT username FROM users U, allowedusers A WHERE U.id=A.user2_id " \
     "AND A.thread_id =:id"
     result = db.session.execute(sql,{"id":id})
@@ -115,7 +115,6 @@ def get_list_of_allowed_users():
     list = allowed_users
     
     return list
-   
 
 def get_list_of_users():
     sql = "SELECT username FROM users WHERE id != :id" 
@@ -124,6 +123,15 @@ def get_list_of_users():
     list = users
 
     return list
+
+
+def get_list_of_users_without_thread_starter_user(id):
+    sql = "SELECT username FROM users U, threads T WHERE NOT U.id = T.user_id AND T.id =:id" 
+    result = db.session.execute(sql, {"id":id})
+    users = result.fetchall()
+    list = users
+
+    return list    
 
 def update_allowed_users(allowed_users):
     #Check usernames from database

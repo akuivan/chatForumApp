@@ -186,8 +186,8 @@ def modify_thread(id):
     thread = result.fetchall()
     list =thread
 
-    return render_template("modifyThread.html", thread=list, id=id, allowed =users.get_list_of_allowed_users(id)
-    , users = users.get_list_of_users())
+    return render_template("modifyThread.html", thread=list, id=id, allowed =users.get_list_of_allowed_users_usernames(id)
+    , users = users.get_list_of_users_without_thread_starter_user(id))
 
 
 @app.route("/updateThread/<int:id>", methods=["POST"])
