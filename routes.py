@@ -14,7 +14,10 @@ def index():
 
 @app.route("/forumIndex")
 def forumIndex():
-    return render_template("forumIndex.html")
+    if users.is_user():
+        return render_template("forumIndex.html")
+    else:
+        abort(403)
 
 @app.route("/ruokaCategory")
 def ruoka_category():
