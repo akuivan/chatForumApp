@@ -3,11 +3,7 @@
 <a href="/forumIndex">Palaa takaisin kategorioihin</a><br>
 <h3>Hakutulokset:</h3><br>
 {% for message in messages %}
-  {% if true  == message[2] %}
-    <i>Yksityinen viesti</i><br>
-    <a href="/thread/{{ message[0] }}">Mene viestiketjuun</a><br>
-    <p>
-  {% else %}
+  {% if false  == message[2] %}
     <i>Viesti:</i> {{ message[1] }}
     <p>
     <a href="/thread/{{ message[0] }}">Mene viestiketjuun</a><br>
